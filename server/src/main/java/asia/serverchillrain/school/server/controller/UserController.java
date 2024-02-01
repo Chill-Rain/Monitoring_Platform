@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @auther 2024 01 27
  * 登录注销注册Controller
  */
-@RestController("/user")
+@RestController
+@RequestMapping("/user")
 public class UserController extends BaseController {
     @Resource
     private UserService userService;
@@ -26,5 +27,9 @@ public class UserController extends BaseController {
     @RequestMapping("/login")
     public Response login(HttpServletRequest request, String email, String password) throws MonitoringPlatformException {
         return getSuccessResponse(userService.login(request, email, password));
+    }
+    @RequestMapping("/logout")
+    public Response logout(HttpServletRequest request) throws MonitoringPlatformException {
+        return getSuccessResponse(userService.logout(request));
     }
 }

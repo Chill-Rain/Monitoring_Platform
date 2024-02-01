@@ -20,19 +20,34 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.Random;
 
 /**
  * @auther 2024 01 28
  */
 @Service
+//@Scope("singleton")
 public class UserServiceImpl implements UserService {
     private static Logger logger = LoggerFactory.getLogger(UserService.class);
     @Resource
-    private MemoryManager redis;
+    private  MemoryManager redis;
+
+//    static {
+//        try {
+//            redis = new MemoryManager();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        } catch (ClassNotFoundException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
     @Resource
     private UserMapper userMapper;
     @Override
@@ -103,16 +118,20 @@ public class UserServiceImpl implements UserService {
         MemoryData data = new MemoryData(JsonUtil.object2Json(user));
         data.setNeedExpired(true);
         data.expired(7 * 24 * 60 * 60);
-        request.getSession().setAttribute(Constant.LOG_USER, user);
+        request.getSession().setAttribute(Constant.LOG_USER + ip, user);
         redis.put(ip + "-" + email, data);
         return "已登录！";
     }
 
     @Override
-    public String logout(User user) {
-        String email = user.getEmail();
-        redis.remove(Constant.LOG_USER + email);
-        logger.info("用户登出---> " + email);
-        return null;
+    public String logout(HttpServletRequest request) throws MonitoringPlatformException {
+        String ip = IPUtil.getIp(request);
+        UserVo uservo = (UserVo) request.getSession().getAttribute(Constant.LOG_USER + IPUtil.getIp(request));
+        if(uservo == null){
+            throw new MonitoringPlatformException("你没有登陆！", ResponseCodeEnum.CODE_600);
+        }
+        redis.remove(ip + "-" + uservo.getEmail());
+        logger.info("用户登出---> " + uservo.getEmail());
+        return "Success!";
     }
 }

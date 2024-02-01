@@ -18,18 +18,18 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandlerController extends BaseController {
     private static  Logger logger = LoggerFactory.getLogger(GlobalExceptionHandlerController.class);
 //    @ExceptionHandler(value = Exception.class)
-//    public Response handler(Exception e){
-//        logger.error(e.getMessage());
-//        if(e instanceof MonitoringPlatformException) {
-//            return Monitorhandler((MonitoringPlatformException) e);
-//        }else {
-//            return getErrorResponse(e.getClass().getName()
-//                    + ": "
-//                    + e.getMessage(),
-//                    ResponseCodeEnum.CODE_700);
-//        }
-//
-//    }
+    public Response handler(Exception e){
+        logger.error(e.getMessage());
+        if(e instanceof MonitoringPlatformException) {
+            return Monitorhandler((MonitoringPlatformException) e);
+        }else {
+            return getErrorResponse(e.getClass().getName()
+                    + ": "
+                    + e.getMessage(),
+                    ResponseCodeEnum.CODE_700);
+        }
+
+    }
     private Response Monitorhandler(MonitoringPlatformException e){
        return getErrorResponse(e.getMessage(), e.getCodeEnum());
     }

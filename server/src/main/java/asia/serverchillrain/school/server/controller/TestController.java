@@ -8,9 +8,11 @@ import asia.serverchillrain.school.server.entity.enums.ResponseCodeEnum;
 import asia.serverchillrain.school.server.entity.exception.MonitoringPlatformException;
 import asia.serverchillrain.school.server.database.MemoryManager;
 import asia.serverchillrain.school.server.mappers.UserMapper;
+import asia.serverchillrain.school.server.service.UserService;
 import asia.serverchillrain.school.server.utils.DataBaseUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,10 +25,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * 测试Controller
  */
 @RestController
+@RequestMapping("/test")
 public class TestController extends BaseController {
     @Resource
-    private UserMapper userMapper;
+    private UserService userService;
     @Resource
+    private UserMapper userMapper;
+//    @Resource
     private MemoryManager dataManager;
     @RequestMapping("/test")
     public Response test(){

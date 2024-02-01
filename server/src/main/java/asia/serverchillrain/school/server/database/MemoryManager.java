@@ -32,7 +32,7 @@ public class MemoryManager {
     private BlockingQueue<String> queue = new ArrayBlockingQueue(100);
     private boolean flag = true;
     private int checkCount = 25;
-    private MemoryManager() throws IOException, ClassNotFoundException {
+    public MemoryManager() throws IOException, ClassNotFoundException {
         logger.info("内存数据管理器已创建！");
         new Thread(() -> {
             try {
