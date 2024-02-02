@@ -136,16 +136,6 @@ public class MemoryManager {
                     data.setIsDelete(true);
                 }
             }
-//            queue.forEach(data ->{
-//                long now = System.currentTimeMillis();
-//                MemoryData memoryData = memoryDataBase.get(data);
-//                //应当过期
-//                if(memoryData != null &&
-//                        memoryData.getExpiredTime() != 0L &&
-//                        memoryData.getExpiredTime() - now >= 0){
-//                    memoryData.setIsDelete(true);
-//                }
-//            });
             Thread.sleep(1000);
         }
     }
@@ -159,12 +149,6 @@ public class MemoryManager {
                     logger.info("删除了数据--->" + next.getValue());
                 }
             }
-//            memoryDataBase.forEach((key, data) -> {
-//                if(data.getIsDelete()){
-//                    memoryDataBase.remove(key);
-//                    logger.info("删除了数据--->" + key);
-//                }
-//            });
             Thread.sleep(10 * 1000);
         }
     }

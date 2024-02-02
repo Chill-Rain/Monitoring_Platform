@@ -4,6 +4,7 @@ import asia.serverchillrain.school.server.controller.root.BaseController;
 import asia.serverchillrain.school.server.entity.bean.Response;
 import asia.serverchillrain.school.server.entity.exception.MonitoringPlatformException;
 import asia.serverchillrain.school.server.service.UserService;
+import asia.serverchillrain.school.server.service.VerificationService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController extends BaseController {
     @Resource
     private UserService userService;
+    @Resource
+    private VerificationService verificationService;
 
     @RequestMapping("/register")
     public Response register(String email, String password, String emailCode) throws MonitoringPlatformException {

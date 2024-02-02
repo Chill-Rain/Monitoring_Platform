@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class GlobalExceptionHandlerController extends BaseController {
     private static  Logger logger = LoggerFactory.getLogger(GlobalExceptionHandlerController.class);
-//    @ExceptionHandler(value = Exception.class)
+    @ExceptionHandler(value = Exception.class)
     public Response handler(Exception e){
         logger.error(e.getMessage());
         if(e instanceof MonitoringPlatformException) {

@@ -2,6 +2,10 @@ package asia.serverchillrain.school.server.config;
 
 import asia.serverchillrain.school.server.database.MemoryData;
 import asia.serverchillrain.school.server.entity.vo.UserVo;
+import asia.serverchillrain.school.server.settings.email.EmailContent;
+import asia.serverchillrain.school.server.settings.email.EmailSystemUser;
+import asia.serverchillrain.school.server.settings.email.EmailTime;
+import asia.serverchillrain.school.server.settings.email.EmailTitle;
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +28,11 @@ public class SerializableHintConfig {
                 String.class,
                 ConcurrentHashMap.class,
                 MemoryData.class,
-                UserVo.class
+                UserVo.class,
+                EmailTime.class,
+                EmailTitle.class,
+                EmailContent.class,
+                EmailSystemUser.class
         ).collect(Collectors.toList());
         @Override
         public void registerHints(RuntimeHints hints, ClassLoader classLoader) {

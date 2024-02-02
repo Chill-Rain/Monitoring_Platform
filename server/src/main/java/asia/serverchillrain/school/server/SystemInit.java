@@ -20,7 +20,9 @@ public class SystemInit implements ApplicationRunner {
     private UserService userService;
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        systemSettingService.refreshCache();
+        systemSettingService.readSettings2Redis();
+        systemSettingService.readSettingsFormRedis2Memory();
         userService.registerAdmin(Constant.adminUser);
+
     }
 }

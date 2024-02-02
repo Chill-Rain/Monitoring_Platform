@@ -27,23 +27,19 @@ public class DataBaseUtil {
             ois.close();
             if(o instanceof String){
                 logger.info("数据载入于--->" + path);
-//                return (ConcurrentHashMap<String, MemoryData>) o;
                 return readJsonDataBase((String) o);
             }else {
                 logger.info("空内存数据库--->已创建新数据源");
                 return new ConcurrentHashMap<>();
-//                return new Hashtable<String, MemoryData>();
             }
         }else {
             logger.info("空内存数据库--->已创建新数据源");
             return new ConcurrentHashMap<>();
-//            return new Hashtable<String, MemoryData>();
         }
     }
     public static void saveDataBase(Map<String, MemoryData> database){
         try {
             String databaseJson = JsonUtil.object2Json(database);
-
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path));
             oos.writeObject(databaseJson);
             oos.close();
@@ -54,7 +50,6 @@ public class DataBaseUtil {
     }
     private static ConcurrentHashMap<String, MemoryData> readJsonDataBase(String json){
         return JSON.parseObject(json, new TypeReference<ConcurrentHashMap<String, MemoryData>>() {});
-//        return JSON.parseObject(json, ConcurrentHashMap.class);
 
     }
 
