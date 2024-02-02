@@ -3,11 +3,13 @@ package asia.serverchillrain.school.server.service.impl;
 import asia.serverchillrain.school.server.config.ServerConfig;
 import asia.serverchillrain.school.server.database.MemoryManager;
 import asia.serverchillrain.school.server.entity.Constant;
+import asia.serverchillrain.school.server.entity.enums.ApiSettingClass;
 import asia.serverchillrain.school.server.entity.enums.EmailSettingClass;
 import asia.serverchillrain.school.server.entity.enums.ResponseCodeEnum;
 import asia.serverchillrain.school.server.entity.exception.MonitoringPlatformException;
 import asia.serverchillrain.school.server.service.SystemSettingService;
 import asia.serverchillrain.school.server.settings.RedisConfigLine;
+import asia.serverchillrain.school.server.settings.api.root.ApiSetting;
 import asia.serverchillrain.school.server.settings.email.root.EmailSetting;
 import asia.serverchillrain.school.server.utils.JsonUtil;
 import asia.serverchillrain.school.server.utils.SystemSettingUtil;
@@ -16,8 +18,6 @@ import com.alibaba.fastjson2.TypeReference;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import static asia.serverchillrain.school.server.utils.CodingUtil.*;
-
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.UnsupportedEncodingException;
@@ -25,6 +25,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
+
+import static asia.serverchillrain.school.server.utils.CodingUtil.*;
+import static asia.serverchillrain.school.server.utils.SystemSettingUtil.*;
 
 /**
  * @auther 2024 01 28
@@ -66,7 +69,7 @@ public class SystemSettingServiceImpl implements SystemSettingService {
     }
 
     private void readEmailConfig2Memory() throws MonitoringPlatformException, IntrospectionException, ClassNotFoundException, InvocationTargetException, IllegalAccessException, InstantiationException {
-        String emailJson = redis.get(Constant.EMAILS);
+        String emailJson = redis.get(KEY_EMAILS);
         EmailSetting emailsetting = new EmailSetting();
         Map<String, String> emailSettingMap = JSON.parseObject(emailJson, new TypeReference<Map<String, String>>() {});
         Iterator<Map.Entry<String, String>> iterator = emailSettingMap.entrySet().iterator();
@@ -77,13 +80,28 @@ public class SystemSettingServiceImpl implements SystemSettingService {
             Method writeMethod = pd.getWriteMethod();
             Class clazz = Class.forName(setting.getClassPath());
             RedisConfigLine redisConfigLine = (RedisConfigLine) clazz.newInstance();
-            redisConfigLine.setSettingLine(next.getValue());
+            redisConfigLine.setLine(next.getValue());
             writeMethod.invoke(emailsetting, redisConfigLine);
         }
-        SystemSettingUtil.putSetting(SystemSettingUtil.KEY_EMAILS, emailsetting);
+        putSetting(KEY_EMAILS, emailsetting);
     }
 
-    private void readApis2Memory() {
+    private void readApis2Memory() throws IntrospectionException, InstantiationException, IllegalAccessException, ClassNotFoundException, InvocationTargetException, MonitoringPlatformException {
+        String apiJson = redis.get(KEY_APIS);
+        ApiSetting apiSetting = new ApiSetting();
+        Map<String, String> emailSettingMap = JSON.parseObject(apiJson, new TypeReference<Map<String, String>>() {});
+        Iterator<Map.Entry<String, String>> iterator = emailSettingMap.entrySet().iterator();
+        while (iterator.hasNext()){
+            Map.Entry<String, String> next = iterator.next();
+            ApiSettingClass setting = ApiSettingClass.getByName(next.getKey());
+            PropertyDescriptor pd = new PropertyDescriptor(setting.getName(), ApiSetting.class);
+            Method writeMethod = pd.getWriteMethod();
+            Class clazz = Class.forName(setting.getClassPath());
+            RedisConfigLine redisConfigLine = (RedisConfigLine) clazz.newInstance();
+            redisConfigLine.setLine(next.getValue());
+            writeMethod.invoke(apiSetting, redisConfigLine);
+        }
+        putSetting(KEY_APIS, apiSetting);
     }
 
     @Override
@@ -105,7 +123,7 @@ public class SystemSettingServiceImpl implements SystemSettingService {
 
     private void readEmailConfig() throws UnsupportedEncodingException {
         Map<String, String> emailConfig = null;
-        String emailJsons = redis.get(Constant.EMAILS);
+        String emailJsons = redis.get(KEY_EMAILS);
         if(emailJsons != null){
             emailConfig = JSON.parseObject(emailJsons, new TypeReference<Map<String, String>>() {});
         }else{
@@ -116,13 +134,13 @@ public class SystemSettingServiceImpl implements SystemSettingService {
                     Constant.EMAIL_TIME, ISOtoUTF8(time),
                     Constant.SYSTEM_EMAIL, ISOtoUTF8(systemEmail)
             );
-            redis.put(Constant.EMAILS, JsonUtil.object2Json(emailConfig));
+            redis.put(KEY_EMAILS, JsonUtil.object2Json(emailConfig));
         }
     }
 
     private void readApis() throws UnsupportedEncodingException {
         Map<String, String> apis = null;
-        String apiJsons = redis.get(Constant.APIS);
+        String apiJsons = redis.get(KEY_APIS);
         if(apiJsons != null){
             apis = JSON.parseObject(apiJsons, new TypeReference<Map<String, String>>() {});
         }else{
@@ -134,7 +152,7 @@ public class SystemSettingServiceImpl implements SystemSettingService {
                     "fire", ISOtoUTF8(model + fire),
                     "phone", ISOtoUTF8(model + phone)
             );
-            redis.put(Constant.APIS, JsonUtil.object2Json(apis));
+            redis.put(KEY_APIS, JsonUtil.object2Json(apis));
         }
     }
     private void readMysqlSetting(){

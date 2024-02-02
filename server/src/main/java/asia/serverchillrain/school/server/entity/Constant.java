@@ -24,5 +24,5 @@ public class Constant {
     public static final String APIS = "APIS";
     public static final String EMAILS = "EMAILS";
 
-    public static String EMAIL_EXPIRE_TIME = "email_expire_time";
+//    public static String EMAIL_EXPIRE_TIME = "email_expire_time";
 }

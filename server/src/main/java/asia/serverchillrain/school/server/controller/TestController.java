@@ -11,6 +11,7 @@ import asia.serverchillrain.school.server.database.MemoryManager;
 import asia.serverchillrain.school.server.mappers.UserMapper;
 import asia.serverchillrain.school.server.service.UserService;
 import asia.serverchillrain.school.server.settings.Setting;
+import asia.serverchillrain.school.server.settings.api.root.ApiSetting;
 import asia.serverchillrain.school.server.settings.email.root.EmailSetting;
 import asia.serverchillrain.school.server.utils.DataBaseUtil;
 import asia.serverchillrain.school.server.utils.SystemSettingUtil;
@@ -90,22 +91,16 @@ public class TestController extends BaseController {
     }
     @RequestMapping("/email/{target}/{content}")
     public Response email(@PathVariable String target, @PathVariable String content) throws MessagingException {
-        String emailJson = redis.get(Constant.EMAILS);
-        Map<String, String> emailSetting = JSON.parseObject(emailJson, new TypeReference<Map<String, String>>() {
-        });
-        MimeMessage message = sender.createMimeMessage();//发送器
-        MimeMessageHelper helper = new MimeMessageHelper(message);//编辑器
-        helper.setSubject(emailSetting.get(Constant.EMAIL_TITLE));
-        helper.setText(content);
-        helper.setSentDate(new Date());
-        helper.setTo(target);
-        helper.setFrom(emailSetting.get(Constant.SYSTEM_EMAIL));
-        sender.send(message);
         return getSuccessResponse("success!");
     }
-    @RequestMapping("/invoke")
-    public Response invoke(){
+    @RequestMapping("/invokeEmail")
+    public Response invokeEmail(){
         EmailSetting emailSetting = (EmailSetting)SystemSettingUtil.getSystemSetting(SystemSettingUtil.KEY_EMAILS);
         return getSuccessResponse(emailSetting.getSystem_email());
+    }
+    @RequestMapping("/invokeApi")
+    public Response invokeApi(){
+        ApiSetting apiSetting = (ApiSetting)SystemSettingUtil.getSystemSetting(SystemSettingUtil.KEY_APIS);
+        return getSuccessResponse(apiSetting.getCamera());
     }
 }

@@ -7,11 +7,10 @@ import asia.serverchillrain.school.server.entity.bean.User;
 import asia.serverchillrain.school.server.entity.enums.ResponseCodeEnum;
 import asia.serverchillrain.school.server.entity.exception.MonitoringPlatformException;
 import asia.serverchillrain.school.server.mappers.UserMapper;
-import asia.serverchillrain.school.server.service.UserService;
 import asia.serverchillrain.school.server.service.VerificationService;
+import asia.serverchillrain.school.server.settings.email.root.EmailSetting;
 import asia.serverchillrain.school.server.utils.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -19,6 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import static asia.serverchillrain.school.server.utils.SystemSettingUtil.*;
 
 import java.util.Date;
 
@@ -35,6 +35,7 @@ public class VerificationServiceImpl implements VerificationService {
     private UserMapper userMapper;
     @Override
     public String sendEmailCode(HttpServletRequest request, String email) throws MonitoringPlatformException {
+        EmailSetting emailSetting = (EmailSetting)getSystemSetting(KEY_EMAILS);
         //首先查询用户是否存在，存在则抛出异常不存在则继续
         User user = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getEmail, email));
         if(user != null){
@@ -47,7 +48,7 @@ public class VerificationServiceImpl implements VerificationService {
         }
         String code = RandomUtil.getEmailCode(5);
         MemoryData data = new MemoryData(code);
-        data.expired(Long.getLong(redis.get(Constant.EMAIL_EXPIRE_TIME)));
+        data.expired(Long.getLong(emailSetting.getEmail_time().getLine()));
         redis.put(Constant.EMAILCODE + email, data);
         this.sendCode(email, code);
         return "send email code success";
@@ -57,16 +58,15 @@ public class VerificationServiceImpl implements VerificationService {
         try {
             MimeMessage message = sender.createMimeMessage();//发送器
             MimeMessageHelper helper = new MimeMessageHelper(message);//编辑器
-            /*
-            邮件编辑
-             */
-            helper.setSubject(redis.get(Constant.EMAIL_TITLE));
-            helper.setText(redis.get(Constant.EMAIL_MESSAGE)
+            //邮件编辑
+            EmailSetting emailSetting = (EmailSetting)getSystemSetting(KEY_EMAILS);
+            helper.setSubject(emailSetting.getEmail_title().getLine());
+            helper.setText(emailSetting.getEmail_content().getLine()
                     .replace("{code}", code)
-                    .replace("{time}", Long.getLong(redis.get(Constant.EMAIL_EXPIRE_TIME)) / 1000 / 60 + "分钟"));
+                    .replace("{time}", Long.getLong(emailSetting.getEmail_time().getLine()) / 1000 / 60 + "分钟"));
             helper.setSentDate(new Date());
             helper.setTo(email);
-            helper.setFrom(redis.get(Constant.SYSTEM_EMAIL));
+            helper.setFrom(emailSetting.getSystem_email().getLine());
             sender.send(message);
         } catch (MessagingException e) {
             throw new RuntimeException(e);

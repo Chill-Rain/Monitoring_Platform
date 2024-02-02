@@ -8,6 +8,5 @@ import lombok.Data;
  */
 @Data
 public abstract class RedisConfigLine {
-    protected String SettingLine;
-
+    protected String line;
 }
