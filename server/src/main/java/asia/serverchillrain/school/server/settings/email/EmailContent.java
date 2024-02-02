@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * @auther 2024 02 02
+ * 邮件正文
  */
 @Data
 @NoArgsConstructor

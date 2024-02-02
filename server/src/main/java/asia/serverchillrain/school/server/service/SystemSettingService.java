@@ -10,9 +10,8 @@ import java.lang.reflect.InvocationTargetException;
  * 系统配置服务
  */
 public interface SystemSettingService {
-    String readSettingsFormRedis2Memory() throws UnsupportedEncodingException, IntrospectionException, MonitoringPlatformException, ClassNotFoundException, InvocationTargetException, IllegalAccessException;
+    String readSettingsFormRedis2Memory() throws UnsupportedEncodingException, IntrospectionException, MonitoringPlatformException, ClassNotFoundException, InvocationTargetException, IllegalAccessException, InstantiationException;
 
-//    String writeSettingDB(SystemSettingLine settingJson);
     String updateSetting();
 
     String readSettings2Redis() throws UnsupportedEncodingException;

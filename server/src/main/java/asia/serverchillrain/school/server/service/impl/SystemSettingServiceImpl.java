@@ -7,8 +7,10 @@ import asia.serverchillrain.school.server.entity.enums.EmailSettingClass;
 import asia.serverchillrain.school.server.entity.enums.ResponseCodeEnum;
 import asia.serverchillrain.school.server.entity.exception.MonitoringPlatformException;
 import asia.serverchillrain.school.server.service.SystemSettingService;
+import asia.serverchillrain.school.server.settings.RedisConfigLine;
 import asia.serverchillrain.school.server.settings.email.root.EmailSetting;
 import asia.serverchillrain.school.server.utils.JsonUtil;
+import asia.serverchillrain.school.server.utils.SystemSettingUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.TypeReference;
 import jakarta.annotation.Resource;
@@ -26,6 +28,7 @@ import java.util.Map;
 
 /**
  * @auther 2024 01 28
+ * 系统设置服务
  */
 @Service
 public class SystemSettingServiceImpl implements SystemSettingService {
@@ -56,25 +59,28 @@ public class SystemSettingServiceImpl implements SystemSettingService {
     @Resource
     private MemoryManager redis;
     @Override
-    public String readSettingsFormRedis2Memory() throws UnsupportedEncodingException, IntrospectionException, MonitoringPlatformException, ClassNotFoundException, InvocationTargetException, IllegalAccessException {
+    public String readSettingsFormRedis2Memory() throws UnsupportedEncodingException, IntrospectionException, MonitoringPlatformException, ClassNotFoundException, InvocationTargetException, IllegalAccessException, InstantiationException {
         readApis2Memory();
         readEmailConfig2Memory();
         return "Success!";
     }
 
-    private void readEmailConfig2Memory() throws MonitoringPlatformException, IntrospectionException, ClassNotFoundException, InvocationTargetException, IllegalAccessException {
-//        String emailJson = redis.get(Constant.EMAILS);
-//        EmailSetting emailsetting = new EmailSetting();
-//        Map<String, String> emailSettingMap = JSON.parseObject(emailJson, new TypeReference<Map<String, String>>() {});
-//        Iterator<Map.Entry<String, String>> iterator = emailSettingMap.entrySet().iterator();
-//        while (iterator.hasNext()){
-//            Map.Entry<String, String> next = iterator.next();
-//            EmailSettingClass setting = EmailSettingClass.getByName(next.getKey());
-//            PropertyDescriptor pd = new PropertyDescriptor(setting.getName(), EmailSetting.class);
-//            Method writeMethod = pd.getWriteMethod();
-//            Class clazz = Class.forName(setting.getClassPath());
-//            writeMethod.invoke(emailsetting, JsonUtil.json2Object(next.getValue(), clazz));
-//        }
+    private void readEmailConfig2Memory() throws MonitoringPlatformException, IntrospectionException, ClassNotFoundException, InvocationTargetException, IllegalAccessException, InstantiationException {
+        String emailJson = redis.get(Constant.EMAILS);
+        EmailSetting emailsetting = new EmailSetting();
+        Map<String, String> emailSettingMap = JSON.parseObject(emailJson, new TypeReference<Map<String, String>>() {});
+        Iterator<Map.Entry<String, String>> iterator = emailSettingMap.entrySet().iterator();
+        while (iterator.hasNext()){
+            Map.Entry<String, String> next = iterator.next();
+            EmailSettingClass setting = EmailSettingClass.getByName(next.getKey());
+            PropertyDescriptor pd = new PropertyDescriptor(setting.getName(), EmailSetting.class);
+            Method writeMethod = pd.getWriteMethod();
+            Class clazz = Class.forName(setting.getClassPath());
+            RedisConfigLine redisConfigLine = (RedisConfigLine) clazz.newInstance();
+            redisConfigLine.setSettingLine(next.getValue());
+            writeMethod.invoke(emailsetting, redisConfigLine);
+        }
+        SystemSettingUtil.putSetting(SystemSettingUtil.KEY_EMAILS, emailsetting);
     }
 
     private void readApis2Memory() {

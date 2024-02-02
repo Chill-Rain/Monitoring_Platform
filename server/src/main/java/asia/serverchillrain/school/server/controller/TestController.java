@@ -10,7 +10,10 @@ import asia.serverchillrain.school.server.entity.exception.MonitoringPlatformExc
 import asia.serverchillrain.school.server.database.MemoryManager;
 import asia.serverchillrain.school.server.mappers.UserMapper;
 import asia.serverchillrain.school.server.service.UserService;
+import asia.serverchillrain.school.server.settings.Setting;
+import asia.serverchillrain.school.server.settings.email.root.EmailSetting;
 import asia.serverchillrain.school.server.utils.DataBaseUtil;
+import asia.serverchillrain.school.server.utils.SystemSettingUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -99,5 +102,10 @@ public class TestController extends BaseController {
         helper.setFrom(emailSetting.get(Constant.SYSTEM_EMAIL));
         sender.send(message);
         return getSuccessResponse("success!");
+    }
+    @RequestMapping("/invoke")
+    public Response invoke(){
+        EmailSetting emailSetting = (EmailSetting)SystemSettingUtil.getSystemSetting(SystemSettingUtil.KEY_EMAILS);
+        return getSuccessResponse(emailSetting.getSystem_email());
     }
 }
