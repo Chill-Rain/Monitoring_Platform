@@ -1,10 +1,9 @@
 package asia.serverchillrain.school.server.database;
 
-import asia.serverchillrain.school.server.entity.enums.ResponseCodeEnum;
-import asia.serverchillrain.school.server.entity.exception.MonitoringPlatformException;
+
+import asia.serverchillrain.school.server.utils.CodingUtil;
 import asia.serverchillrain.school.server.utils.DataBaseUtil;
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -16,9 +15,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @auther 2024 01 27
@@ -27,11 +23,11 @@ import java.util.concurrent.locks.ReentrantLock;
 @Component
 public class MemoryManager {
 
-    private Map<String, MemoryData> memoryDataBase = DataBaseUtil.getDataBase();
+    private final Map<String, MemoryData> memoryDataBase = DataBaseUtil.getDataBase();
     private final Logger logger = LoggerFactory.getLogger(MemoryManager.class);
-    private BlockingQueue<String> queue = new ArrayBlockingQueue(100);
-    private boolean flag = true;
-    private int checkCount = 25;
+    private final BlockingQueue<String> queue = new ArrayBlockingQueue<>(100);
+    private final boolean flag = true;
+
     public MemoryManager() throws IOException, ClassNotFoundException {
         logger.info("内存数据管理器已创建！");
         new Thread(() -> {
@@ -62,21 +58,24 @@ public class MemoryManager {
             DataBaseUtil.saveDataBase(memoryDataBase);
         }));
     }
-    public String get(String key){
+    public String get(String key) throws UnsupportedEncodingException {
         MemoryData data = memoryDataBase.get(key);
         if(data == null || data.getIsDelete()){
             return null;
         }
         logger.info("获取了数据---> " + key + "-" + data.getData());
+//        return CodingUtil.UTF8toGBK(data.getData());
         return data.getData();
+//        return new String(data.getData().getBytes("UTF-8"));
     }
-    public String put(String key, String data){
+    public void put(String key, String data) throws UnsupportedEncodingException {
+//        data = CodingUtil.UTF8toGBK(data);
         memoryDataBase.put(key, new MemoryData(data));
         logger.info("添加了数据---> " + key + "-" + data);
         DataBaseUtil.saveDataBase(memoryDataBase);
-        return data;
     }
-    public MemoryData put(String key, MemoryData data){
+    public MemoryData put(String key, MemoryData data) throws UnsupportedEncodingException {
+//        data.setData(CodingUtil.UTF8toGBK(data.getData()));
         if(memoryDataBase.get(key) != null){
             memoryDataBase.put(key, data);
             logger.info("修改了数据---> " + key + "-" + data);
@@ -87,7 +86,7 @@ public class MemoryManager {
         DataBaseUtil.saveDataBase(memoryDataBase);
         return data;
     }
-    public String remove(String key){
+    public String remove(String key) {
         MemoryData data = memoryDataBase.get(key);
         if(data == null || data.getIsDelete()){
             return null;
@@ -103,6 +102,7 @@ public class MemoryManager {
             //读取库容量大小，并动态确定要标记的数量
             int size = memoryDataBase.size();
             //动态确定淘汰数量
+            int checkCount = 25;
             int count = (size / checkCount) < checkCount ? 0 : (size / checkCount);
             Random random = new Random();
             memoryDataBase.forEach((key, data) ->{
@@ -127,12 +127,10 @@ public class MemoryManager {
      */
     private void consume() throws InterruptedException {
         while(flag){
-            Iterator<String> iterator = queue.iterator();
-            while (iterator.hasNext()){
-                String key = iterator.next();
+            for (String key : queue) {
                 long now = System.currentTimeMillis();
                 MemoryData data = memoryDataBase.get(key);
-                if(data != null && data.getExpiredTime() != 0L && data.getExpiredTime() - now <= 0){
+                if (data != null && data.getExpiredTime() != 0L && data.getExpiredTime() - now <= 0) {
                     data.setIsDelete(true);
                 }
             }

@@ -14,17 +14,19 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @auther 2024 01 27
- * Jar状态下的内存数据库快照处理
+ * Jar下的内存处理器
  */
 
 public class DataBaseUtil {
-    private static Logger logger = LoggerFactory.getLogger(DataBaseUtil.class);
-    private static String path = "data.mp";
+    private static final Logger logger = LoggerFactory.getLogger(DataBaseUtil.class);
+    private static final String path = "data.mp";
     public static Map<String, MemoryData> getDataBase() throws IOException, ClassNotFoundException {
         if(new File(path).exists()){
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File(path)));
             Object o = ois.readObject();
             ois.close();
+//            if(o instanceof Map){
+//                return (Map<String, MemoryData>) o;
             if(o instanceof String){
                 logger.info("数据载入于--->" + path);
                 return readJsonDataBase((String) o);

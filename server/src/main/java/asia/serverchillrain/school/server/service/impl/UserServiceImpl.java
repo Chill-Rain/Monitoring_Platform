@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
 /**
@@ -87,7 +88,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(HttpServletRequest request, String email, String password) throws MonitoringPlatformException {
+    public String login(HttpServletRequest request, String email, String password) throws MonitoringPlatformException, UnsupportedEncodingException {
         String ip = IPUtil.getIp(request);
         String userJson = redis.get(ip + "-" + email);
         UserVo user = null;
@@ -124,7 +125,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String logout(HttpServletRequest request) throws MonitoringPlatformException {
+    public String logout(HttpServletRequest request) throws MonitoringPlatformException, UnsupportedEncodingException {
         String ip = IPUtil.getIp(request);
         UserVo uservo = (UserVo) request.getSession().getAttribute(Constant.LOG_USER + IPUtil.getIp(request));
         if(uservo == null){

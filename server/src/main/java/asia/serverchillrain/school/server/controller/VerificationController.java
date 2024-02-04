@@ -10,6 +10,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * @auther 2024 01 27
  * 验证Controller
@@ -21,7 +23,7 @@ public class VerificationController extends BaseController {
     @Resource
     private VerificationService verificationService;
     @RequestMapping("/sendEmailCode")
-    public Response sendEmailCode(HttpServletRequest request, String email) throws MonitoringPlatformException {
+    public Response sendEmailCode(HttpServletRequest request, String email) throws MonitoringPlatformException, UnsupportedEncodingException {
         return getSuccessResponse(verificationService.sendEmailCode(request, email));
     }
 

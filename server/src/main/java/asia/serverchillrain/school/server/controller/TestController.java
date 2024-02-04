@@ -29,9 +29,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static asia.serverchillrain.school.server.utils.SystemSettingUtil.KEY_EMAILS;
+import static asia.serverchillrain.school.server.utils.SystemSettingUtil.getSystemSetting;
 
 /**
  * @auther 2024 01 26
@@ -60,19 +64,19 @@ public class TestController extends BaseController {
         throw new MonitoringPlatformException("成功触发异常", ResponseCodeEnum.CODE_700);
     }
     @RequestMapping("/add/{key}/{data}")
-    public Response add(@PathVariable String key, @PathVariable String data) throws MonitoringPlatformException {
+    public Response add(@PathVariable String key, @PathVariable String data) throws MonitoringPlatformException, UnsupportedEncodingException {
         MemoryData data1 = dataManager.put(key, new MemoryData(data));
         return getSuccessResponse(data1);
     }
 
     @RequestMapping("/get/{key}")
-    public Response get(@PathVariable String key) throws MonitoringPlatformException {
+    public Response get(@PathVariable String key) throws MonitoringPlatformException, UnsupportedEncodingException {
         String data1 = dataManager.get(key);
         return getSuccessResponse(data1);
     }
 
     @RequestMapping("/remove/{key}")
-    public Response remove(@PathVariable String key) throws MonitoringPlatformException {
+    public Response remove(@PathVariable String key) throws MonitoringPlatformException, UnsupportedEncodingException {
         String data1 = dataManager.remove(key);
         return getSuccessResponse(data1);
     }
@@ -89,8 +93,27 @@ public class TestController extends BaseController {
     public Response read() throws IOException, ClassNotFoundException {
         return getSuccessResponse(DataBaseUtil.getDataBase());
     }
+    @RequestMapping("/readMemory")
+    public Response readMemory() throws IOException, ClassNotFoundException {
+        return getSuccessResponse(redis.get(KEY_EMAILS));
+    }
     @RequestMapping("/email/{target}/{content}")
     public Response email(@PathVariable String target, @PathVariable String content) throws MessagingException {
+        try {
+            MimeMessage message = sender.createMimeMessage();//发送器
+            MimeMessageHelper helper = new MimeMessageHelper(message);//编辑器
+            //邮件编辑
+            EmailSetting emailSetting = (EmailSetting)getSystemSetting(KEY_EMAILS);
+            helper.setSubject(emailSetting.getEmail_title().getLine());
+            helper.setText(content);
+            helper.setSentDate(new Date());
+            helper.setTo(target);
+            helper.setFrom(emailSetting.getSystem_email().getLine());
+            sender.send(message);
+//            logger.info("邮件发送成功！收件人：" + email);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
         return getSuccessResponse("success!");
     }
     @RequestMapping("/invokeEmail")

@@ -10,9 +10,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * @auther 2024 01 27
- * 登录注销注册Controller
+ * Controller
  */
 @RestController
 @RequestMapping("/user")
@@ -28,11 +30,11 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping("/login")
-    public Response login(HttpServletRequest request, String email, String password) throws MonitoringPlatformException {
+    public Response login(HttpServletRequest request, String email, String password) throws MonitoringPlatformException, UnsupportedEncodingException {
         return getSuccessResponse(userService.login(request, email, password));
     }
     @RequestMapping("/logout")
-    public Response logout(HttpServletRequest request) throws MonitoringPlatformException {
+    public Response logout(HttpServletRequest request) throws MonitoringPlatformException, UnsupportedEncodingException {
         return getSuccessResponse(userService.logout(request));
     }
 }

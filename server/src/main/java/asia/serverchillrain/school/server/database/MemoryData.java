@@ -25,8 +25,8 @@ public class MemoryData implements Serializable {
     private Long expiredTime = 0L;
 
     public MemoryData(String data) {
-//        this.data = data;
-        this.data = new String(data.getBytes(StandardCharsets.UTF_8));
+        this.data = data;
+//        this.data = new String(data);
         length = data.length();
     }
     public void expired(long time) {

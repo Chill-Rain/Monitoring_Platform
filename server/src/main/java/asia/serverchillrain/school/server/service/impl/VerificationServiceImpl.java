@@ -15,11 +15,14 @@ import jakarta.annotation.Resource;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import static asia.serverchillrain.school.server.utils.SystemSettingUtil.*;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 /**
@@ -27,6 +30,7 @@ import java.util.Date;
  */
 @Service
 public class VerificationServiceImpl implements VerificationService {
+    private static final Logger logger = LoggerFactory.getLogger(VerificationService.class);
     @Resource
     private MemoryManager redis;
     @Resource
@@ -34,7 +38,7 @@ public class VerificationServiceImpl implements VerificationService {
     @Resource
     private UserMapper userMapper;
     @Override
-    public String sendEmailCode(HttpServletRequest request, String email) throws MonitoringPlatformException {
+    public String sendEmailCode(HttpServletRequest request, String email) throws MonitoringPlatformException, UnsupportedEncodingException {
         EmailSetting emailSetting = (EmailSetting)getSystemSetting(KEY_EMAILS);
         //首先查询用户是否存在，存在则抛出异常不存在则继续
         User user = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getEmail, email));
@@ -54,6 +58,11 @@ public class VerificationServiceImpl implements VerificationService {
         return "send email code success";
     }
 
+    /**
+     * 邮件生成器
+     * @param email 目标邮箱
+     * @param code 验证码
+     */
     private void sendCode(String email, String code) {
         try {
             MimeMessage message = sender.createMimeMessage();//发送器
@@ -68,6 +77,7 @@ public class VerificationServiceImpl implements VerificationService {
             helper.setTo(email);
             helper.setFrom(emailSetting.getSystem_email().getLine());
             sender.send(message);
+            logger.info("邮件发送成功！收件人：" + email);
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }

@@ -91,6 +91,7 @@
                     <image>
                         <name>nativeloggingproblem</name>
                     </image>
+                    <imageName>服务端</imageName>
                 </configuration>
             </plugin>
             <plugin>
