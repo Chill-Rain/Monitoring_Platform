@@ -1,7 +1,6 @@
 package asia.serverchillrain.school.server.utils;
 
 import asia.serverchillrain.school.server.settings.Setting;
-import asia.serverchillrain.school.server.settings.email.root.EmailSetting;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

@@ -1,4 +1,5 @@
 package asia.serverchillrain.school.server.utils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,9 +13,15 @@ import java.net.URL;
 
 /**
  * @author ChillRain 2024 02 01
+ * Http请求工具
  */
 public class HttpUtil {
-    public static String HttpGet(String site){
+    private static final Logger logger = LoggerFactory.getLogger(HttpUtil.class);
+    /**
+     * Get请求
+     * @param site 请求地址
+     */
+    public static void HttpGet(String site){
         HttpURLConnection connection = null;
         InputStream is = null;
         BufferedReader br = null;
@@ -59,6 +66,5 @@ public class HttpUtil {
             }
             connection.disconnect();// 关闭远程连接
         }
-        return result;
     }
 }

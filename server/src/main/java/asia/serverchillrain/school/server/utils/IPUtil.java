@@ -1,10 +1,7 @@
 package asia.serverchillrain.school.server.utils;
 
 
-
 import jakarta.servlet.http.HttpServletRequest;
-
-import java.util.Map;
 
 public class IPUtil {
     public static String getIp(HttpServletRequest request){

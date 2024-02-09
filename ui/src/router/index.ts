@@ -1,25 +1,34 @@
-// router/index.ts ÎÄ¼ş
+// router/index.ts æ–‡ä»¶
 import { createRouter, createWebHashHistory, RouterOptions, Router, RouteRecordRaw } from 'vue-router'
 type RouteRecordRaw = typeof RouteRecordRaw
 type RouterOptions = typeof RouterOptions
 type Router = typeof Router
-//ÓÉÓÚrouterµÄAPIÄ¬ÈÏÊ¹ÓÃÁËÀàĞÍ½øĞĞ³õÊ¼»¯£¬ÄÚ²¿°üº¬ÀàĞÍ¶¨Òå£¬ËùÒÔ±¾ÎÄÄÚ²¿´úÂëÖĞµÄËùÓĞÊı¾İÀàĞÍÊÇ¿ÉÒÔÊ¡ÂÔµÄ
-//RouterRecordRawÊÇÂ·ÓÉ×é¼ş¶ÔÏó
+//ç”±äºrouterçš„APIé»˜è®¤ä½¿ç”¨äº†ç±»å‹è¿›è¡Œåˆå§‹åŒ–ï¼Œå†…éƒ¨åŒ…å«ç±»å‹å®šä¹‰ï¼Œæ‰€ä»¥æœ¬æ–‡å†…éƒ¨ä»£ç ä¸­çš„æ‰€æœ‰æ•°æ®ç±»å‹æ˜¯å¯ä»¥çœç•¥çš„
+//RouterRecordRawæ˜¯è·¯ç”±ç»„ä»¶å¯¹è±¡
 const routes: RouteRecordRaw[] = [
     {
         path: '/',
         name: 'Layout',
-        component: () => import("~/views/Layout.vue")
-    }
+        component: () => import("~/views/Layout.vue"),
+        children: [
+            {
+                path: '/register',
+                name: 'register',
+                component: () => import("~/views/webComponent/Register.vue")
+            }
+        ]
+    },
+
+
 
 ]
 
-// RouterOptionsÊÇÂ·ÓÉÑ¡ÏîÀàĞÍ
+// RouterOptionsæ˜¯è·¯ç”±é€‰é¡¹ç±»å‹
 const options: RouterOptions = {
     history: createWebHashHistory(),
     routes,
 }
-// RouterÊÇÂ·ÓÉ¶ÔÏóÀàĞÍ
+// Routeræ˜¯è·¯ç”±å¯¹è±¡ç±»å‹
 const router: Router = createRouter(options)
 
 export default router

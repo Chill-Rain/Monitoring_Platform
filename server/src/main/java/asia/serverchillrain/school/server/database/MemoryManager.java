@@ -1,14 +1,13 @@
 package asia.serverchillrain.school.server.database;
 
 
-import asia.serverchillrain.school.server.utils.CodingUtil;
 import asia.serverchillrain.school.server.utils.DataBaseUtil;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
@@ -58,24 +57,38 @@ public class MemoryManager {
             DataBaseUtil.saveDataBase(memoryDataBase);
         }));
     }
-    public String get(String key) throws UnsupportedEncodingException {
+
+    /**
+     * 从库中读取数据
+     * @param key 键
+     * @return 值
+     */
+    public String get(String key) {
         MemoryData data = memoryDataBase.get(key);
         if(data == null || data.getIsDelete()){
             return null;
         }
         logger.info("获取了数据---> " + key + "-" + data.getData());
-//        return CodingUtil.UTF8toGBK(data.getData());
         return data.getData();
-//        return new String(data.getData().getBytes("UTF-8"));
     }
-    public void put(String key, String data) throws UnsupportedEncodingException {
-//        data = CodingUtil.UTF8toGBK(data);
+
+    /**
+     * 向库中写入数据
+     * @param key 键
+     * @param data 值
+     */
+    public void put(String key, String data) {
         memoryDataBase.put(key, new MemoryData(data));
         logger.info("添加了数据---> " + key + "-" + data);
         DataBaseUtil.saveDataBase(memoryDataBase);
     }
-    public MemoryData put(String key, MemoryData data) throws UnsupportedEncodingException {
-//        data.setData(CodingUtil.UTF8toGBK(data.getData()));
+
+    /**
+     * 向库中写入数据
+     * @param key 键
+     * @param data 值
+     */
+    public MemoryData put(String key, MemoryData data) {
         if(memoryDataBase.get(key) != null){
             memoryDataBase.put(key, data);
             logger.info("修改了数据---> " + key + "-" + data);
@@ -86,6 +99,12 @@ public class MemoryManager {
         DataBaseUtil.saveDataBase(memoryDataBase);
         return data;
     }
+
+    /**
+     * 从库中移除数据
+     * @param key 键
+     * @return 被移除数据的值
+     */
     public String remove(String key) {
         MemoryData data = memoryDataBase.get(key);
         if(data == null || data.getIsDelete()){
@@ -97,6 +116,10 @@ public class MemoryManager {
         return data.getData();
     }
 
+    /**
+     * 抽样器
+     * @throws InterruptedException
+     */
     private void produce() throws InterruptedException {
         while(flag){
             //读取库容量大小，并动态确定要标记的数量
@@ -123,7 +146,7 @@ public class MemoryManager {
     }
 
     /**
-     * 标记删除
+     * 标记器
      */
     private void consume() throws InterruptedException {
         while(flag){
@@ -137,6 +160,11 @@ public class MemoryManager {
             Thread.sleep(1000);
         }
     }
+
+    /**
+     * 定期删除器
+     * @throws InterruptedException
+     */
     private void delete() throws InterruptedException {
         while(flag){
             Iterator<Map.Entry<String, MemoryData>> iterator = memoryDataBase.entrySet().iterator();

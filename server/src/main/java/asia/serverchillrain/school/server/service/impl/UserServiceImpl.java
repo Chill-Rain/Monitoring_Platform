@@ -17,15 +17,11 @@ import asia.serverchillrain.school.server.utils.JsonUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
 

@@ -2,7 +2,7 @@ package asia.serverchillrain.school.server.service.impl;
 
 import asia.serverchillrain.school.server.database.MemoryManager;
 import asia.serverchillrain.school.server.entity.Constant;
-import asia.serverchillrain.school.server.entity.enums.ApiSettingClass;
+import asia.serverchillrain.school.server.entity.enums.Api;
 import asia.serverchillrain.school.server.entity.enums.EmailSettingClass;
 import asia.serverchillrain.school.server.entity.exception.MonitoringPlatformException;
 import asia.serverchillrain.school.server.service.SystemSettingService;
@@ -16,6 +16,7 @@ import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
+
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.UnsupportedEncodingException;
@@ -23,7 +24,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import static asia.serverchillrain.school.server.utils.CodingUtil.*;
 import static asia.serverchillrain.school.server.utils.SystemSettingUtil.*;
 
 /**
@@ -88,7 +88,7 @@ public class SystemSettingServiceImpl implements SystemSettingService {
         Map<String, String> emailSettingMap = JSON.parseObject(apiJson, new TypeReference<>() {
         });
         for (Map.Entry<String, String> next : emailSettingMap.entrySet()) {
-            ApiSettingClass setting = ApiSettingClass.getByName(next.getKey());
+            Api setting = Api.getByName(next.getKey());
             PropertyDescriptor pd = new PropertyDescriptor(setting.getName(), ApiSetting.class);
             Method writeMethod = pd.getWriteMethod();
             Class<?> clazz = Class.forName(setting.getClassPath());

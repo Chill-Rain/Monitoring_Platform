@@ -2,11 +2,6 @@ package asia.serverchillrain.school.server.config;
 
 import asia.serverchillrain.school.server.database.MemoryData;
 import asia.serverchillrain.school.server.entity.vo.UserVo;
-import asia.serverchillrain.school.server.settings.api.*;
-import asia.serverchillrain.school.server.settings.email.EmailContent;
-import asia.serverchillrain.school.server.settings.email.EmailSystemUser;
-import asia.serverchillrain.school.server.settings.email.EmailTime;
-import asia.serverchillrain.school.server.settings.email.EmailTitle;
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
 import org.springframework.context.annotation.Configuration;

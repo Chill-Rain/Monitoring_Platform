@@ -20,10 +20,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import static asia.serverchillrain.school.server.utils.SystemSettingUtil.*;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+
+import static asia.serverchillrain.school.server.utils.SystemSettingUtil.KEY_EMAILS;
+import static asia.serverchillrain.school.server.utils.SystemSettingUtil.getSystemSetting;
 
 /**
  * @auther 2024 01 27

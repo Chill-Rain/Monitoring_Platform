@@ -11,7 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.function.BooleanSupplier;
 
-import static asia.serverchillrain.school.server.utils.SystemSettingUtil.*;
+import static asia.serverchillrain.school.server.utils.SystemSettingUtil.KEY_APIS;
+import static asia.serverchillrain.school.server.utils.SystemSettingUtil.getSystemSetting;
 /**
  * @auther 2024 02 01
  * API服务
@@ -19,17 +20,15 @@ import static asia.serverchillrain.school.server.utils.SystemSettingUtil.*;
 @Service
 public class ApiServiceImpl implements ApiService {
     private static final Logger logger = LoggerFactory.getLogger(ApiService.class);
-//    @Resource
-//    private MemoryManager redis;
 
+    /**
+     * Api请求
+     * @param type Api的type
+     * @return 响应内容
+     * @throws MonitoringPlatformException 监控平台异常
+     */
     @Override
     public String action(String type) throws MonitoringPlatformException {
-
-//        Map<String, String> apis = JSON.parseObject(redis.get(Constant.APIS), new TypeReference<Map<String, String>>() {});
-//        if(apis == null){
-//            throw new MonitoringPlatformException("APIS设置异常！请删除data.mp!", ResponseCodeEnum.CODE_700);
-//        }
-//        String site = apis.get(type);
         ApiSetting apiSetting = (ApiSetting) getSystemSetting(KEY_APIS);
         String site = apiSetting.getApiByType(type);
         if(site == null){
@@ -42,6 +41,12 @@ public class ApiServiceImpl implements ApiService {
         });
         return result;
     }
+
+    /**
+     * 函数接口
+     * @param func 函数
+     * @return 执行是否成功
+     */
     private String doFunction(BooleanSupplier func){
         return String.valueOf(func.getAsBoolean());
     }

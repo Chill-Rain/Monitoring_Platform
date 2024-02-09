@@ -6,7 +6,6 @@ import asia.serverchillrain.school.server.entity.exception.MonitoringPlatformExc
 import asia.serverchillrain.school.server.service.VerificationService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,6 +21,15 @@ import java.io.UnsupportedEncodingException;
 public class VerificationController extends BaseController {
     @Resource
     private VerificationService verificationService;
+
+    /**
+     * 发送验证码
+     * @param request 本次请求
+     * @param email 邮箱
+     * @return 返回
+     * @throws MonitoringPlatformException 监控平台异常
+     * @throws UnsupportedEncodingException 编码异常
+     */
     @RequestMapping("/sendEmailCode")
     public Response sendEmailCode(HttpServletRequest request, String email) throws MonitoringPlatformException, UnsupportedEncodingException {
         return getSuccessResponse(verificationService.sendEmailCode(request, email));

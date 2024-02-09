@@ -1,12 +1,10 @@
 package asia.serverchillrain.school.server.database;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @auther 2024 01 27
@@ -26,7 +24,6 @@ public class MemoryData implements Serializable {
 
     public MemoryData(String data) {
         this.data = data;
-//        this.data = new String(data);
         length = data.length();
     }
     public void expired(long time) {

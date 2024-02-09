@@ -1,8 +1,11 @@
 package asia.serverchillrain.school.server.entity.enums;
 
+import lombok.Getter;
+
 /**
  * 状态码
  */
+@Getter
 public enum ResponseCodeEnum {
 
     CODE_200(200, "请求成功"),
@@ -14,19 +17,12 @@ public enum ResponseCodeEnum {
      */
     CODE_700(700, "服务器底层错误");
 
-    private int code;
-    private String mess;
+    private final int code;
+    private final String mess;
 
     ResponseCodeEnum(int code, String mess) {
         this.code = code;
         this.mess = mess;
     }
 
-    public int getCode() {
-        return code;
-    }
-
-    public String getMess() {
-        return mess;
-    }
 }

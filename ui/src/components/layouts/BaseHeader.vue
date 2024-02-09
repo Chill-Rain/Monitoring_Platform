@@ -9,15 +9,18 @@ const apis = {
   logout: "/api/user/logout",
   register: "/api/user/register"
 }
+// const buttons = [
+//   { type: '', text: 'login', },
+//   { type: '', text: 'logout' },
+//   { type: '', text: 'register' },
+// ] as const
 const buttons = [
-  { type: '', text: 'login', },
-  { type: '', text: 'logout' },
-  { type: '', text: 'register' },
-] as const
-const loginRegisterRef = ref();
-const loginAndRegister = (type) => {
-  loginRegisterRef.value.showPanel(type);
-}
+  {
+    text: "confirm",
+    type: "primary",
+  },
+];
+const showDialog = ref(true)
 </script>
 
 <template>
@@ -39,13 +42,17 @@ const loginAndRegister = (type) => {
     <div style="width: 50%; display: inline;">
       <el-menu class="el-menu-flex">
         <div class="menu-section right">
-          <el-menu-item index="1" @click=loginAndRegister(1)>{{ login }}</el-menu-item>
-          <el-menu-item index="2" @click="loginAndRegister(0)">Register</el-menu-item>
+          <el-menu-item index="1" @click="showDialog = true">{{ login }}</el-menu-item>
+          <el-menu-item index="2" @click="showDialog = true">Register</el-menu-item>
           <el-menu-item index="3" @click=apis.logout>Logout</el-menu-item>
         </div>
       </el-menu>
     </div>
   </div>
+  <Dialog :show="showDialog"
+          clickToClose="false"
+          :buttons="buttons"
+          @close="showDialog = false">测试内容</Dialog>
 </template>
 <style scoped>
 .button{

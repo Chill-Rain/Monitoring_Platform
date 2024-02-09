@@ -4,6 +4,7 @@ import java.util.Random;
 
 /**
  * @auther 2024 02 02
+ * 随机数生成工具
  */
 
 public class RandomUtil {
