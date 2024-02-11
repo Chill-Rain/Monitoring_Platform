@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 @Configuration
 @ImportRuntimeHints(ReflectHintConfig.class)
 public class ReflectHintConfig implements RuntimeHintsRegistrar {
-    private static List<Class> clazzs = Stream.of(
+    private static final List<Class<?>> clazzs = Stream.of(
             EmailTime.class,
             EmailTitle.class,
             EmailContent.class,
