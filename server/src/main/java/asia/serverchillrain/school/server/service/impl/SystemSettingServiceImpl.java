@@ -29,6 +29,7 @@ import static asia.serverchillrain.school.server.utils.SystemSettingUtil.*;
 /**
  * @auther 2024 01 28
  * 系统设置服务
+ * 如果要能单独写，则需要读txt
  */
 @Service
 @PropertySource(value = "classpath:setting.properties", encoding = "UTF-8")
@@ -36,8 +37,10 @@ public class SystemSettingServiceImpl implements SystemSettingService {
 
     @Value("${application.api.camera.site}")
     private String cameraSite;
+    @Value("${application.api.camera.open}")
+    private String open;
     @Value("${application.api.rtmp.site}")
-    private String camera;
+    private String rtmp;
     @Value("${application.api.model.site}")
     private String model;
     @Value("${application.api.smock.site}")
@@ -56,6 +59,8 @@ public class SystemSettingServiceImpl implements SystemSettingService {
     private String systemEmail;
     @Value("${application.system.email.title}")
     private String title;
+    @Value("${application.api.camera.close}")
+    private String close;
     @Resource
     private MemoryManager redis;
     @Override
@@ -143,7 +148,9 @@ public class SystemSettingServiceImpl implements SystemSettingService {
         }else{
             //为空 写入apis
             apis = Map.of(
-                    "camera", cameraSite + camera,
+                    "cameraSite", cameraSite,
+                    "cameraClose", cameraSite + close,
+                    "cameraOpen", cameraSite + open + rtmp,
                     "smock", model + smock,
                     "sleep", model + sleep,
                     "fire", model + fire,

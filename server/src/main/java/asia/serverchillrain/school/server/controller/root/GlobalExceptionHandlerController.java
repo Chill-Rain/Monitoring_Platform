@@ -9,12 +9,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.net.ConnectException;
+
 /**
  * @auther 2024 01 26
  * 异常控制器
  */
 @RestControllerAdvice
-@Slf4j
 public class GlobalExceptionHandlerController extends BaseController {
     private static  Logger logger = LoggerFactory.getLogger(GlobalExceptionHandlerController.class);
     @ExceptionHandler(value = Exception.class)
@@ -28,8 +29,8 @@ public class GlobalExceptionHandlerController extends BaseController {
                     + e.getMessage(),
                     ResponseCodeEnum.CODE_700);
         }
-
     }
+
     private Response Monitorhandler(MonitoringPlatformException e){
        return getErrorResponse(e.getMessage(), e.getCodeEnum());
     }

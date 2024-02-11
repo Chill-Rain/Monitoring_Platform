@@ -3,7 +3,7 @@ package asia.serverchillrain.school.server.settings;
 import lombok.Data;
 
 /**
- * @auther 2024 02 02
+ * &#064;auther  2024 02 02
  * redis设置的抽象
  */
 @Data

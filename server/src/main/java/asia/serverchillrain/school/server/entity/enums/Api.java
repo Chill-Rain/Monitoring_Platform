@@ -8,11 +8,13 @@ import lombok.Getter;
  */
 @Getter
 public enum Api {
-    CAMERA("camera", "asia.serverchillrain.school.server.settings.api.CameraHardWare"),
+    CAMERA_SITE("cameraSite", "asia.serverchillrain.school.server.settings.api.CameraHardWare"),
     PHONE("phone", "asia.serverchillrain.school.server.settings.api.PhoneModel"),
     SLEEP("sleep", "asia.serverchillrain.school.server.settings.api.SleepModel"),
     FIRE("fire", "asia.serverchillrain.school.server.settings.api.FireModel"),
-    SMOCK("smock", "asia.serverchillrain.school.server.settings.api.SmockModel")
+    SMOCK("smock", "asia.serverchillrain.school.server.settings.api.SmockModel"),
+    CAMERA_CLOSE("cameraClose", "asia.serverchillrain.school.server.settings.api.CameraCloseSite"),
+    CAMERA_OPEN("cameraOpen", "asia.serverchillrain.school.server.settings.api.CameraOpenSite")
     ;
     private final String name;
     private final String classPath;

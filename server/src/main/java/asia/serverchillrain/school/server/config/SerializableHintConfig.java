@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 /**
  * @auther 2024 01 29
- * 序列化注册器
+ * 序列化指示器
  */
 @Configuration
 @ImportRuntimeHints(SerializableHintConfig.class)
@@ -29,9 +29,7 @@ public class SerializableHintConfig implements RuntimeHintsRegistrar{
     ).collect(Collectors.toList());
     @Override
     public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
-        for (Class clazz : clazzs) {
-            hints.serialization().registerType(clazz);
-        }
+        clazzs.forEach(x -> hints.serialization().registerType(x));
     }
 
 }

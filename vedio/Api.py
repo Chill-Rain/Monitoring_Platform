@@ -1,11 +1,14 @@
 import json
+import logging
+import os
 from multiprocessing import Process
 import cv2
 import subprocess as sp
 from flask import Flask, request
 
 app = Flask(__name__)
-
+#推流标记
+sign = True
 
 # 部署于硬件设备中的Api，用于启动与关闭摄像头
 @app.route("/getConnect", methods=["GET"])
@@ -22,13 +25,30 @@ def getConnect():
     else:
         work.dst = dst
         Process(target=work, args=(dst,)).start()
+        return (json.dumps(return_dict, ensure_ascii=False))
+
+
+
+@app.route("/connectClose", methods=["GET"])
+def connectClose():
+    return_dict = {'return_code': '200', 'return_info': '处理成功', 'result': False}
+    if request.args is None:
+        return_dict['return_code'] = '5004'
+        return_dict['return_info'] = '请求参数为空'
         return json.dumps(return_dict, ensure_ascii=False)
+    global sign
+    sign = False
+    print(sign)
+    return json.dumps(return_dict, ensure_ascii=False)
 
 
 def work(dst):
     # 打开本机摄像头
     cap = cv2.VideoCapture(0)
-    readVideo(cap, dst)
+    try:
+        readVideo(cap, dst)
+    except Exception as e:
+        logging.info('xxxxxxxxxx',e )
     cap.release()
     cv2.destroyAllWindows()
 
@@ -52,12 +72,15 @@ def rtmp(cap, dst):
                dst]
 
     pipe = sp.Popen(command, stdin=sp.PIPE)
+    global pid
+    pid = pipe.pid
     return pipe
 
 
 def readVideo(cap, dst):
     pipe = rtmp(cap, dst)
-    while (True):
+    global sign
+    while (sign):
         ret, frame = cap.read()
         # 开始推流
         pipe.stdin.write(frame.tobytes())

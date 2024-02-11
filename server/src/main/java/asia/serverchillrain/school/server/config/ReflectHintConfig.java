@@ -19,15 +19,18 @@ import java.util.stream.Stream;
 
 /**
  * @auther 2024 02 02
+ * 反射指示器
  */
 @Configuration
 @ImportRuntimeHints(ReflectHintConfig.class)
 public class ReflectHintConfig implements RuntimeHintsRegistrar {
-    private static List<Class> list = Stream.of(
+    private static List<Class> clazzs = Stream.of(
             EmailTime.class,
             EmailTitle.class,
             EmailContent.class,
             EmailSystemUser.class,
+            CameraOpenSite.class,
+            CameraCloseSite.class,
             CameraHardWare.class,
             FireModel.class,
             PhoneModel.class,
@@ -38,6 +41,6 @@ public class ReflectHintConfig implements RuntimeHintsRegistrar {
     ).collect(Collectors.toList());
     @Override
     public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
-        list.forEach(x -> hints.reflection().registerType(x, MemberCategory.values()));
+        clazzs.forEach(x -> hints.reflection().registerType(x, MemberCategory.values()));
     }
 }

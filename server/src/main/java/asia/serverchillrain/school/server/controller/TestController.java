@@ -118,6 +118,6 @@ public class TestController extends BaseController {
     @RequestMapping("/invokeApi")
     public Response<String> invokeApi(){
         ApiSetting apiSetting = (ApiSetting)SystemSettingUtil.getSystemSetting(SystemSettingUtil.KEY_APIS);
-        return getSuccessResponse(apiSetting.getCamera());
+        return getSuccessResponse(apiSetting.getCameraSite());
     }
 }

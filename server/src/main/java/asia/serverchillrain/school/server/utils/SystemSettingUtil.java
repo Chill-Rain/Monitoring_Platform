@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @auther 2024 02 02
+ * &#064;auther  2024 02 02
  * 系统设置工具
  */
 

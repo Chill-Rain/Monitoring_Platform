@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @auther 2024 02 01
+ * &#064;auther  2024 02 01
  * Api请求Controlelr
  */
 @RestController

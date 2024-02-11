@@ -1,5 +1,6 @@
 package asia.serverchillrain.school.server.service.impl;
 
+import asia.serverchillrain.school.server.entity.enums.Api;
 import asia.serverchillrain.school.server.entity.enums.ResponseCodeEnum;
 import asia.serverchillrain.school.server.entity.exception.MonitoringPlatformException;
 import asia.serverchillrain.school.server.service.ApiService;
@@ -31,15 +32,15 @@ public class ApiServiceImpl implements ApiService {
     public String action(String type) throws MonitoringPlatformException {
         ApiSetting apiSetting = (ApiSetting) getSystemSetting(KEY_APIS);
         String site = apiSetting.getApiByType(type);
-        if(site == null){
+        //不能直接请求camera_site，因为这只是一个网络地址
+        if(site == null || site.equals(Api.CAMERA_SITE.getName())){
             throw new MonitoringPlatformException("请求了错误的API！", ResponseCodeEnum.CODE_404);
         }
-        String result = doFunction(() -> {
+        return doFunction(() -> {
             HttpUtil.HttpGet(site);
             logger.info("请求的api为---> " + type);
             return true;
         });
-        return result;
     }
 
     /**

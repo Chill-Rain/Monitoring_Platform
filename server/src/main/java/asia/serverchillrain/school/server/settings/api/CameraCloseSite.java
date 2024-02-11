@@ -3,8 +3,8 @@ package asia.serverchillrain.school.server.settings.api;
 import asia.serverchillrain.school.server.settings.RedisConfigLine;
 
 /**
- * &#064;auther  2024 02 02
+ * &#064;auther  2024 02 11
  */
 
-public class CameraHardWare extends RedisConfigLine {
+public class CameraCloseSite extends RedisConfigLine {
 }
