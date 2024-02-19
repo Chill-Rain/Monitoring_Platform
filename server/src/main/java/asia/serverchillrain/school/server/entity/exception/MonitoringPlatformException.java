@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * @auther 2024 01 26
+ * &#064;auther  2024 01 26
  * 监控平台异常
  */
 @EqualsAndHashCode(callSuper = true)

@@ -7,12 +7,14 @@ import asia.serverchillrain.school.server.settings.email.EmailTime;
 import asia.serverchillrain.school.server.settings.email.EmailTitle;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * @auther 2024 02 02
+ * &#064;auther  2024 02 02
  * 邮箱设置
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

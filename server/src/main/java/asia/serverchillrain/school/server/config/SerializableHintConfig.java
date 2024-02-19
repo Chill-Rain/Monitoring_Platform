@@ -14,13 +14,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * @auther 2024 01 29
+ * &#064;auther  2024 01 29
  * 序列化指示器
  */
 @Configuration
 @ImportRuntimeHints(SerializableHintConfig.class)
 public class SerializableHintConfig implements RuntimeHintsRegistrar{
-    private static List<Class> clazzs = Stream.of(
+    private static final List<Class> clazzs = Stream.of(
             String.class,
             ConcurrentHashMap.class,
             MemoryData.class,

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * @auther 2024 02 02
+ * &#064;auther  2024 02 02
  * 反射指示器
  */
 @Configuration

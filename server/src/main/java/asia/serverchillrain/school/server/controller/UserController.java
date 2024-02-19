@@ -5,7 +5,6 @@ import asia.serverchillrain.school.server.controller.root.BaseController;
 import asia.serverchillrain.school.server.entity.bean.Response;
 import asia.serverchillrain.school.server.entity.exception.MonitoringPlatformException;
 import asia.serverchillrain.school.server.service.UserService;
-import asia.serverchillrain.school.server.service.VerificationService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.UnsupportedEncodingException;
 
 /**
- * @auther 2024 01 27
+ * &#064;auther  2024 01 27
  * Controller
  */
 @RestController
@@ -22,8 +21,6 @@ import java.io.UnsupportedEncodingException;
 public class UserController extends BaseController {
     @Resource
     private UserService userService;
-    @Resource
-    private VerificationService verificationService;
 
     /**
      * 注册

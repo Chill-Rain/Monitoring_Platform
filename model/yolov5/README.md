@@ -109,7 +109,7 @@ results.print()  # or .show(), .save(), .crop(), .pandas(), etc.
 `detect.py` runs inference on a variety of sources, downloading [models](https://github.com/ultralytics/yolov5/tree/master/models) automatically from the latest YOLOv5 [release](https://github.com/ultralytics/yolov5/releases) and saving results to `runs/detect`.
 
 ```bash
-python detect.py --weights yolov5s.pt --source 0                               # webcam
+python detect.py --weights smock_v5.pt --source 0                               # webcam
                                                img.jpg                         # image
                                                vid.mp4                         # video
                                                screen                          # screenshot

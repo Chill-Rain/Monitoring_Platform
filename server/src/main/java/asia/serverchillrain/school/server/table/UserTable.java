@@ -1,7 +1,7 @@
 package asia.serverchillrain.school.server.table;
 
 /**
- * @auther 2024 01 29
+ * &#064;auther  2024 01 29
  * User数据表结构
  */
 

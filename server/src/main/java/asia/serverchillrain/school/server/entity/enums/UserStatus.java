@@ -1,10 +1,10 @@
 package asia.serverchillrain.school.server.entity.enums;
+
+
+import lombok.Getter;
 /**
  * 用户权限等级
  */
-
-import lombok.Getter;
-
 @Getter
 public enum UserStatus {
     ADMIN(5),

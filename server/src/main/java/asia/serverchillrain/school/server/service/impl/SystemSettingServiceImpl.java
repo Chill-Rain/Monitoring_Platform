@@ -27,7 +27,7 @@ import java.util.Map;
 import static asia.serverchillrain.school.server.utils.SystemSettingUtil.*;
 
 /**
- * @auther 2024 01 28
+ * &#064;auther  2024 01 28
  * 系统设置服务
  * 如果要能单独写，则需要读txt
  */

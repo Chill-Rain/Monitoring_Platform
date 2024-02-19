@@ -45,7 +45,7 @@ project_name=<Your Comet Project Name> # This will default to 'yolov5'
 
 ```shell
 # Train YOLOv5s on COCO128 for 5 epochs
-python train.py --img 640 --batch 16 --epochs 5 --data coco128.yaml --weights yolov5s.pt
+python train.py --img 640 --batch 16 --epochs 5 --data coco128.yaml --weights smock_v5.pt
 ```
 
 That's it! Comet will automatically log your hyperparameters, command line arguments, training and validation metrics. You can visualize and analyze your runs in the Comet UI
@@ -106,7 +106,7 @@ python train.py \
 --batch 16 \
 --epochs 5 \
 --data coco128.yaml \
---weights yolov5s.pt \
+--weights smock_v5.pt \
 --save-period 1
 ```
 
@@ -126,7 +126,7 @@ python train.py \
 --batch 16 \
 --epochs 5 \
 --data coco128.yaml \
---weights yolov5s.pt \
+--weights smock_v5.pt \
 --bbox_interval 2
 ```
 
@@ -140,7 +140,7 @@ env COMET_MAX_IMAGE_UPLOADS=200 python train.py \
 --batch 16 \
 --epochs 5 \
 --data coco128.yaml \
---weights yolov5s.pt \
+--weights smock_v5.pt \
 --bbox_interval 1
 ```
 
@@ -154,7 +154,7 @@ env COMET_LOG_PER_CLASS_METRICS=true python train.py \
 --batch 16 \
 --epochs 5 \
 --data coco128.yaml \
---weights yolov5s.pt
+--weights smock_v5.pt
 ```
 
 ## Uploading a Dataset to Comet Artifacts
@@ -169,7 +169,7 @@ python train.py \
 --batch 16 \
 --epochs 5 \
 --data coco128.yaml \
---weights yolov5s.pt \
+--weights smock_v5.pt \
 --upload_dataset
 ```
 
@@ -196,7 +196,7 @@ python train.py \
 --batch 16 \
 --epochs 5 \
 --data artifact.yaml \
---weights yolov5s.pt
+--weights smock_v5.pt
 ```
 
 Artifacts also allow you to track the lineage of data as it flows through your Experimentation workflow. Here you can see a graph that shows you all the experiments that have used your uploaded dataset. <img width="1391" alt="artifact-4" src="https://user-images.githubusercontent.com/7529846/186929264-4c4014fa-fe51-4f3c-a5c5-f6d24649b1b4.png">

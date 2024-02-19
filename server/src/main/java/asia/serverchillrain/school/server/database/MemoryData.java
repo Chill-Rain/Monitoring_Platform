@@ -7,7 +7,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * @auther 2024 01 27
+ * &#064;auther  2024 01 27
  * 内存数据
  */
 @Data

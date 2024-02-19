@@ -6,8 +6,8 @@ Usage:
     import torch
     model = torch.hub.load('ultralytics/yolov5', 'yolov5s')  # official model
     model = torch.hub.load('ultralytics/yolov5:master', 'yolov5s')  # from branch
-    model = torch.hub.load('ultralytics/yolov5', 'custom', 'yolov5s.pt')  # custom/local model
-    model = torch.hub.load('.', 'custom', 'yolov5s.pt', source='local')  # local repo
+    model = torch.hub.load('ultralytics/yolov5', 'custom', 'smock_v5.pt')  # custom/local model
+    model = torch.hub.load('.', 'custom', 'smock_v5.pt', source='local')  # local repo
 """
 
 import torch

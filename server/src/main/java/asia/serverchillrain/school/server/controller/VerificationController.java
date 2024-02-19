@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.UnsupportedEncodingException;
 
 /**
- * @auther 2024 01 27
+ * &#064;auther  2024 01 27
  * 验证Controller
  */
 

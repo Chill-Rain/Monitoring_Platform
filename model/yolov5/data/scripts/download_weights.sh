@@ -4,7 +4,7 @@
 # Example usage: bash data/scripts/download_weights.sh
 # parent
 # └── yolov5
-#     ├── yolov5s.pt  ← downloads here
+#     ├── smock_v5.pt  ← downloads here
 #     ├── yolov5m.pt
 #     └── ...
 

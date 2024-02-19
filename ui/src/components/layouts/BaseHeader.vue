@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { toggleDark } from "~/composables";
 import {ref} from "vue";
+import Register from "~/chillrain_components/Register.vue";
 const login = "Login"
 const apis = {
   systemSettingAPIS: "/api/system/getApis",
@@ -9,11 +10,7 @@ const apis = {
   logout: "/api/user/logout",
   register: "/api/user/register"
 }
-// const buttons = [
-//   { type: '', text: 'login', },
-//   { type: '', text: 'logout' },
-//   { type: '', text: 'register' },
-// ] as const
+
 const buttons = [
   {
     text: "confirm",
@@ -25,12 +22,10 @@ const showDialog = ref(true)
 
 <template>
   <div class="el-menu-flex">
-    <div style="width: 50%; display: inline;">
-      <el-menu class="el-menu-flex">
+    <div style="width: 50%; display: inline;" >
+      <el-menu class="el-menu-flex" style="border: 0">
         <div class="menu-section">
           <el-menu-item index="1">Monitor Platform</el-menu-item>
-<!--          <el-menu-item index="2">Camera</el-menu-item>-->
-<!--          <el-menu-item index="3">APIS</el-menu-item>-->
           <el-menu-item h="full" @click="toggleDark()">
             <button class="border-none w-full bg-transparent cursor-pointer">
               <i inline-flex i="dark:ep-moon ep-sunny" />
@@ -49,10 +44,11 @@ const showDialog = ref(true)
       </el-menu>
     </div>
   </div>
-  <Dialog :show="showDialog"
-          clickToClose="false"
-          :buttons="buttons"
-          @close="showDialog = false">测试内容</Dialog>
+  <Register></Register>
+<!--  <Dialog :show="showDialog"-->
+<!--          clickToClose="false"-->
+<!--          :buttons="buttons"-->
+<!--          @close="showDialog = false">测试内容</Dialog>-->
 </template>
 <style scoped>
 .button{

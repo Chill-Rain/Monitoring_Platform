@@ -17,6 +17,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,12 +33,14 @@ import static asia.serverchillrain.school.server.utils.SystemSettingUtil.KEY_EMA
 import static asia.serverchillrain.school.server.utils.SystemSettingUtil.getSystemSetting;
 
 /**
- * @auther 2024 01 26
+ * &#064;auther  2024 01 26
  * 测试Controller
  */
 @RestController
 @RequestMapping("/test")
 public class TestController extends BaseController {
+    @Value("${application.status}")
+    private String status;
     @Resource
     private UserService userService;
     @Resource
@@ -50,49 +53,76 @@ public class TestController extends BaseController {
     private MemoryManager redis;
 
     @RequestMapping("/test")
-    public Response<String> test(){
+    public Response test() throws MonitoringPlatformException {
+        if(!status.equals("dev")){
+            throw new MonitoringPlatformException("错误的资源！", ResponseCodeEnum.CODE_404);
+        }
        return getSuccessResponse("Test Success!");
     }
     @RequestMapping("/exception")
-    public Response<String> exception() throws MonitoringPlatformException {
+    public Response exception() throws MonitoringPlatformException {
         throw new MonitoringPlatformException("成功触发异常", ResponseCodeEnum.CODE_700);
     }
     @RequestMapping("/add/{key}/{data}")
-    public Response<String> add(@PathVariable String key, @PathVariable String data) throws MonitoringPlatformException, UnsupportedEncodingException {
+    public Response add(@PathVariable String key, @PathVariable String data) throws MonitoringPlatformException, UnsupportedEncodingException {
+        if(!status.equals("dev")){
+            throw new MonitoringPlatformException("错误的资源！", ResponseCodeEnum.CODE_404);
+        }
         MemoryData data1 = dataManager.put(key, new MemoryData(data));
-        return getSuccessResponse(data1);
+        return getSuccessResponse(data1.getData());
     }
 
     @RequestMapping("/get/{key}")
-    public Response<String> get(@PathVariable String key) throws MonitoringPlatformException, UnsupportedEncodingException {
+    public Response get(@PathVariable String key) throws MonitoringPlatformException, UnsupportedEncodingException {
+        if(!status.equals("dev")){
+            throw new MonitoringPlatformException("错误的资源！", ResponseCodeEnum.CODE_404);
+        }
         String data1 = dataManager.get(key);
         return getSuccessResponse(data1);
     }
 
     @RequestMapping("/remove/{key}")
-    public Response<String> remove(@PathVariable String key) throws MonitoringPlatformException, UnsupportedEncodingException {
+    public Response remove(@PathVariable String key) throws MonitoringPlatformException, UnsupportedEncodingException {
+        if(!status.equals("dev")){
+            throw new MonitoringPlatformException("错误的资源！", ResponseCodeEnum.CODE_404);
+        }
         String data1 = dataManager.remove(key);
         return getSuccessResponse(data1);
     }
     @RequestMapping("/selectUser/{id}")
-    public Response<String> selectUser(@PathVariable String id){
+    public Response selectUser(@PathVariable String id) throws MonitoringPlatformException {
+        if(!status.equals("dev")){
+            throw new MonitoringPlatformException("错误的资源！", ResponseCodeEnum.CODE_404);
+        }
         User userInfo = userMapper.selectOne(new QueryWrapper<User>().eq("user_id", id));
-        return getSuccessResponse(userInfo);
+        return getSuccessResponse(userInfo.toString());
     }
     @RequestMapping("/newMap")
-    public Response<String> newMap(){
+    public Response newMap() throws MonitoringPlatformException {
+        if(!status.equals("dev")){
+            throw new MonitoringPlatformException("错误的资源！", ResponseCodeEnum.CODE_404);
+        }
         return getSuccessResponse(new ConcurrentHashMap<>().toString());
     }
     @RequestMapping("/readDatabase")
-    public Response<String> read() throws IOException, ClassNotFoundException {
-        return getSuccessResponse(DataBaseUtil.getDataBase());
+    public Response read() throws IOException, ClassNotFoundException, MonitoringPlatformException {
+        if(!status.equals("dev")){
+            throw new MonitoringPlatformException("错误的资源！", ResponseCodeEnum.CODE_404);
+        }
+        return getSuccessResponse(DataBaseUtil.getDataBase().toString());
     }
     @RequestMapping("/readMemory")
-    public Response<String> readMemory() throws IOException, ClassNotFoundException {
+    public Response readMemory() throws IOException, ClassNotFoundException, MonitoringPlatformException {
+        if(!status.equals("dev")){
+            throw new MonitoringPlatformException("错误的资源！", ResponseCodeEnum.CODE_404);
+        }
         return getSuccessResponse(redis.get(KEY_EMAILS));
     }
     @RequestMapping("/email/{target}/{content}")
-    public Response<String> email(@PathVariable String target, @PathVariable String content) throws MessagingException {
+    public Response email(@PathVariable String target, @PathVariable String content) throws MessagingException, MonitoringPlatformException {
+        if(!status.equals("dev")){
+            throw new MonitoringPlatformException("错误的资源！", ResponseCodeEnum.CODE_404);
+        }
         try {
             MimeMessage message = sender.createMimeMessage();//发送器
             MimeMessageHelper helper = new MimeMessageHelper(message);//编辑器
@@ -111,13 +141,19 @@ public class TestController extends BaseController {
         return getSuccessResponse("success!");
     }
     @RequestMapping("/invokeEmail")
-    public Response<String> invokeEmail(){
+    public Response invokeEmail() throws MonitoringPlatformException {
+        if(!status.equals("dev")){
+            throw new MonitoringPlatformException("错误的资源！", ResponseCodeEnum.CODE_404);
+        }
         EmailSetting emailSetting = (EmailSetting)SystemSettingUtil.getSystemSetting(SystemSettingUtil.KEY_EMAILS);
-        return getSuccessResponse(emailSetting.getSystem_email());
+        return getSuccessResponse(emailSetting.getSystem_email().toString());
     }
     @RequestMapping("/invokeApi")
-    public Response<String> invokeApi(){
+    public Response invokeApi() throws MonitoringPlatformException {
+        if(!status.equals("dev")){
+            throw new MonitoringPlatformException("错误的资源！", ResponseCodeEnum.CODE_404);
+        }
         ApiSetting apiSetting = (ApiSetting)SystemSettingUtil.getSystemSetting(SystemSettingUtil.KEY_APIS);
-        return getSuccessResponse(apiSetting.getCameraSite());
+        return getSuccessResponse(apiSetting.getCameraSite().toString());
     }
 }

@@ -1,6 +1,5 @@
 import json
 import logging
-import os
 from multiprocessing import Process
 import cv2
 import subprocess as sp
@@ -9,6 +8,7 @@ from flask import Flask, request
 app = Flask(__name__)
 #推流标记
 sign = True
+
 
 # 部署于硬件设备中的Api，用于启动与关闭摄像头
 @app.route("/getConnect", methods=["GET"])
@@ -23,10 +23,8 @@ def getConnect():
     if dst == '':
         return json.dumps(return_dict, ensure_ascii=False)
     else:
-        work.dst = dst
         Process(target=work, args=(dst,)).start()
-        return (json.dumps(return_dict, ensure_ascii=False))
-
+        return json.dumps(return_dict, ensure_ascii=False)
 
 
 @app.route("/connectClose", methods=["GET"])
@@ -48,7 +46,7 @@ def work(dst):
     try:
         readVideo(cap, dst)
     except Exception as e:
-        logging.info('xxxxxxxxxx',e )
+        logging.info('打开摄像头异常', e)
     cap.release()
     cv2.destroyAllWindows()
 
@@ -70,17 +68,16 @@ def rtmp(cap, dst):
                '-preset', 'ultrafast',
                '-f', 'flv',
                dst]
-
     pipe = sp.Popen(command, stdin=sp.PIPE)
-    global pid
-    pid = pipe.pid
+    # global pid
+    # pid = pipe.pid
     return pipe
 
 
 def readVideo(cap, dst):
     pipe = rtmp(cap, dst)
     global sign
-    while (sign):
+    while sign:
         ret, frame = cap.read()
         # 开始推流
         pipe.stdin.write(frame.tobytes())

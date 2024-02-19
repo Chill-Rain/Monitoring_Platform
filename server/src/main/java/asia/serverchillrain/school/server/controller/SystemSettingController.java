@@ -13,7 +13,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * @auther 2024 01 28
+ * &#064;auther  2024 01 28
  * 系统设置Controller
  */
 @RestController("/system")
@@ -36,8 +36,4 @@ public class SystemSettingController extends BaseController {
     public Response refresh() throws UnsupportedEncodingException, IntrospectionException, MonitoringPlatformException, ClassNotFoundException, InvocationTargetException, IllegalAccessException, InstantiationException {
         return getSuccessResponse(systemSettingService.readSettingsFormRedis2Memory());
     }
-//    @RequestMapping("/writeSetting")
-//    public Response writeSetting(SystemSettingLine line){
-//        return getSuccessResponse(systemSettingService.writeSettingDB(line));
-//    }
 }

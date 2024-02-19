@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
@@ -16,7 +15,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * @auther 2024 01 27
+ * &#064;auther  2024 01 27
  * 内存管理器(单例) 该部分用于实现一个类似于redis的简单存储库 只提供添加，删除，获取方法
  */
 @Component
@@ -118,7 +117,6 @@ public class MemoryManager {
 
     /**
      * 抽样器
-     * @throws InterruptedException
      */
     private void produce() throws InterruptedException {
         while(flag){
@@ -163,7 +161,6 @@ public class MemoryManager {
 
     /**
      * 定期删除器
-     * @throws InterruptedException
      */
     private void delete() throws InterruptedException {
         while(flag){
