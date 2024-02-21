@@ -22,7 +22,7 @@ public class HttpUtil {
      * Get请求
      * @param site 请求地址
      */
-    public static void HttpGet(String site){
+    public static String HttpGet(String site){
         HttpURLConnection connection = null;
         InputStream is = null;
         BufferedReader br = null;
@@ -65,5 +65,6 @@ public class HttpUtil {
             }
             connection.disconnect();// 关闭远程连接
         }
+        return result;
     }
 }

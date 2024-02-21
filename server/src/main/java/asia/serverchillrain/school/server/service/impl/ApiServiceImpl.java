@@ -1,11 +1,14 @@
 package asia.serverchillrain.school.server.service.impl;
 
+import asia.serverchillrain.school.server.entity.bean.Response;
 import asia.serverchillrain.school.server.entity.enums.Api;
 import asia.serverchillrain.school.server.entity.enums.ResponseCodeEnum;
 import asia.serverchillrain.school.server.entity.exception.MonitoringPlatformException;
+import asia.serverchillrain.school.server.entity.interfaces.ApiFunction;
 import asia.serverchillrain.school.server.service.ApiService;
 import asia.serverchillrain.school.server.settings.api.root.ApiSetting;
 import asia.serverchillrain.school.server.utils.HttpUtil;
+import asia.serverchillrain.school.server.utils.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -37,9 +40,10 @@ public class ApiServiceImpl implements ApiService {
             throw new MonitoringPlatformException("请求了错误的API！", ResponseCodeEnum.CODE_404);
         }
         return doFunction(() -> {
-            HttpUtil.HttpGet(site);
+            String json = HttpUtil.HttpGet(site);
             logger.info("请求的api为---> " + type);
-            return true;
+            Response response = JsonUtil.json2Object(json, Response.class);
+            return response.getInfo();
         });
     }
 
@@ -48,7 +52,7 @@ public class ApiServiceImpl implements ApiService {
      * @param func 函数
      * @return 执行是否成功
      */
-    private String doFunction(BooleanSupplier func){
-        return String.valueOf(func.getAsBoolean());
+    private String doFunction(ApiFunction func){
+        return String.valueOf(func.action());
     }
 }

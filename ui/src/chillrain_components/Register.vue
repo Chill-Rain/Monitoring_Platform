@@ -3,9 +3,9 @@ import { reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 
 interface RuleForm {
-  name: string
-  region: string
-  count: string
+  email: string
+  password: string
+  code: string
   date1: string
   date2: string
   delivery: boolean
@@ -21,6 +21,15 @@ const ruleForm = reactive<RuleForm>({
 })
 
 const rules = reactive<FormRules<RuleForm>>({
+  code: undefined,
+  date1: undefined,
+  date2: undefined,
+  delivery: undefined,
+  desc: undefined,
+  email: undefined,
+  password: undefined,
+  resource: undefined,
+  type: undefined,
   name: [
     { required: true, message: 'Please input Activity name', trigger: 'blur' },
     { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },

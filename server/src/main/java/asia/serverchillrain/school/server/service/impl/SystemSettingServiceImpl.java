@@ -40,7 +40,7 @@ public class SystemSettingServiceImpl implements SystemSettingService {
     @Value("${application.api.camera.open}")
     private String open;
     @Value("${application.api.rtmp.site}")
-    private String rtmp;
+    private String rtsp;
     @Value("${application.api.model.site}")
     private String model;
     @Value("${application.api.smock.site}")
@@ -150,11 +150,11 @@ public class SystemSettingServiceImpl implements SystemSettingService {
             apis = Map.of(
                     "cameraSite", cameraSite,
                     "cameraClose", cameraSite + close,
-                    "cameraOpen", cameraSite + open + rtmp,
-                    "smock", model + smock,
-                    "sleep", model + sleep,
-                    "fire", model + fire,
-                    "phone", model + phone
+                    "cameraOpen", cameraSite + open + rtsp,
+                    "smock", model + smock + rtsp,
+                    "sleep", model + sleep + rtsp,
+                    "fire", model + fire + rtsp,
+                    "phone", model + phone + rtsp
             );
             redis.put(KEY_APIS, JsonUtil.object2Json(apis));
         }

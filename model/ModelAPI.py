@@ -15,39 +15,83 @@ import subprocess as sp
 app = Flask(__name__)
 # Model列表
 models = {}
-# Model键
-keys = []
 # 标记
-sign = True
+pid_list = []
+rtmp_site = 'rtmp://mc.serverchillrain.asia:1935'
+webRTC_site = 'http://mc.serverchillrain.asia:1935'
+rtsp_site = 'rtsp://mc.serverchillrain.asia:8554'
 
-# 模型识别API 使用url中的一段作为参数，这样一个API接口可以当4个用
+
+# 模型识别API 使用url中的一段作为参数，这样一个API接口可以当4个用 已完成测试
 @app.route("/<api>/<type>", methods=['GET'])
 def detect_api(api, type):
     # 返回的json
-    return_dict = {'return_code': '200', 'return_info': '处理成功', 'result': False}
+    return_dict = {'code': '200', 'status': 'SUCCESS', 'data': False, 'info': '请求成功'}
     if request.args is None:
-        return_dict['return_code'] = '5004'
-        return_dict['return_info'] = '请求参数为空'
+        return_dict['code'] = '600'
+        return_dict['info'] = '请求参数为空'
         return json.dumps(return_dict, ensure_ascii=False)
-    #获取url上的数据
-    get_data = request.args.to_dict()
-    dst = get_data.get('dst')
-    if dst == '':
-        return json.dumps(return_dict, ensure_ascii=False)
-    else:
-        model = models[api]
-        Process(target=work, args=(model, type, dst, )).start()
-        return json.dumps(return_dict, ensure_ascii=False)
-
-# 工作器 api为功能名， type为工作模式 dst为流媒体地址
-def work(model, type, dst):
+    model = models[api]
     if model is None:
-        print(f'错误的api！')
+        return_dict['info'] = '错误的API'
+        return json.dumps(return_dict, ensure_ascii=False)
     else:
         # 视频识别
         if type == 'live':
-            detect_video(dst, model)
+            get_data = request.args.to_dict()
+            dst = get_data.get('dst')
+            if dst is None or '':
+                return_dict['info'] = '错误的API'
+                return json.dumps(return_dict, ensure_ascii=False)
+            # dst = rtsp_site + dst
+            # 获取执行进程的pid方便后面用于关闭
+            process = Process(target=detect_video, args=(dst, model, api,))
+            process.start()
+            # 记录pid
+            pid_list[api] = process.pid
+            return json.dumps(return_dict, ensure_ascii=False)
+        # 图像识别
+        elif type == 'img':
+            file = extract_img_form_request(request)
+            img_bytes = file.read()
+            results = detect_img(img_bytes, model)
+            results.render()
+            for img in results.ims:
+                RGB_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                im_arr = cv2.imencode('.jpg', RGB_img)[1]
+                response = make_response(im_arr.tobytes())
+                response.headers['Content-Type'] = 'image/jpeg'
+            return response
 
+
+# 关闭
+@app.route('/close/<api>', methods=['GET'])
+def close(api):
+    return_dict = {'code': '200', 'status': 'SUCCESS', 'data': False, 'info': '请求成功'}
+    if request.args is None:
+        return_dict['code'] = '600'
+        return_dict['info'] = '请求参数为空'
+        return json.dumps(return_dict, ensure_ascii=False)
+    if pid_list[api] is None:
+        return_dict['code'] = '5004'
+        return_dict['info'] = '目标API不存在或已关闭！'
+        return json.dumps(return_dict, ensure_ascii=False)
+    # 杀进程
+    # os.kill(pid_list[api], __signal=9)
+    os.killpg(pid_list[api], __signal=9)
+    return json.dumps(return_dict, ensure_ascii=False)
+
+
+# 重载模型， 已完成测试
+@app.route('/reload', methods=['GET'])
+def reload():
+    return_dict = {'code': '200', 'status': 'SUCCESS', 'data': False, 'info': '请求成功'}
+    if request.args is None:
+        return_dict['code'] = '600'
+        return_dict['info'] = '请求参数为空'
+        return json.dumps(return_dict, ensure_ascii=False)
+    load_models()
+    return json.dumps(return_dict, ensure_ascii=False)
 
 
 # 从request中解析图片
@@ -61,7 +105,7 @@ def extract_img_form_request(request):
     return file
 
 
-# 识别图片
+# 识别图片 已测试
 def detect_img(img_bytes, model):
     # 读取图片
     img = Image.open(io.BytesIO(img_bytes))
@@ -69,13 +113,13 @@ def detect_img(img_bytes, model):
     result = model(img, size=640)
     return result
 
-# 识别动作 dst流媒体地址 model识别模型
-def detect_video(dst, model):
+
+# 识别动作 dst流媒体地址 model识别模型 已测试
+def detect_video(dst, model, api):
     # 打开流
     cap = cv2.VideoCapture(dst)
-    pipe = rtmp(cap, 'rtmp://mc.serverchillrain.asia:1935/smock')
-    global sign
-    while sign:
+    pipe = rtsp(cap, dst + '/' + api)
+    while True:
         ret, frame = cap.read()
         if not ret:
             break
@@ -93,34 +137,38 @@ def detect_video(dst, model):
             # yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
     cap.release()
 
-
+# 加载模型 已测试
 def load_models():
-    print('启动YoloV5服务...')
+    global models
+    models = {}
+    global keys
+    keys = []
+    print('start YoloV5 webservice...')
     # 预训练模型文件夹
     models_dir = 'models_train'
     if len(sys.argv) > 1:
         models_dir = sys.argv[1]
-    print(f'从{models_dir}中读取模型...')
+    print(f'read model form {models_dir}...')
     for r, d, f in os.walk(models_dir):
         for file in f:
             if '.pt' in file:
                 model_file_name = os.path.splitext(file)[0]
                 model_path = os.path.join(r, file)
-                print(f'尝试加载模型文件：{file}...')
+                print(f'load model: {file}...')
                 model_name = model_file_name.split('_')[0]
                 models[model_name] = torch.hub.load('./yolov5', 'custom', path=model_path, force_reload=True,
                                                     source='local')
                 model = models[model_name]
                 model.conf = 0.5
 
-        for key in models:
-            keys.append(key)
-
-def rtmp(cap, dst):
+# rtmp管道 已测试
+def rtsp(cap, dst):
     fps = int(cap.get(cv2.CAP_PROP_FPS))
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     command = ['ffmpeg',
+               '-loglevel', 'error',
+               '-c',
                '-y',
                '-f', 'rawvideo',
                '-vcodec', 'rawvideo',
@@ -131,22 +179,13 @@ def rtmp(cap, dst):
                '-c:v', 'libx264',
                '-pix_fmt', 'yuv420p',
                '-preset', 'ultrafast',
-               '-f', 'flv',
+               '-rtsp_transport', 'tcp',
+               '-f', 'rtsp',
                dst]
     pipe = sp.Popen(command, stdin=sp.PIPE)
     return pipe
 
-@app.route('/close', methods=['GET'])
-def close():
-    return_dict = {'return_code': '200', 'return_info': '处理成功', 'result': False}
-    if request.args is None:
-        return_dict['return_code'] = '5004'
-        return_dict['return_info'] = '请求参数为空'
-        return json.dumps(return_dict, ensure_ascii=False)
-    global sign
-    sign = False
-    print(sign)
-    return json.dumps(return_dict, ensure_ascii=False)
+
 # API 入口
 if __name__ == '__main__':
     load_models()
